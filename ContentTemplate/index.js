@@ -2935,6 +2935,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaXR8OhaoAAubuJ?format=jpg&name=large"
           ]
@@ -2958,6 +2959,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaSMt0hakAAqdeQ?format=jpg&name=large"
           ]
@@ -2981,6 +2983,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaSMk7LbUAAG8sF?format=jpg&name=large"
           ]
@@ -3004,6 +3007,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaSONzVbUAEohKw?format=jpg&name=large"
           ]
@@ -3027,6 +3031,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaSNaI7bcAAPIIP?format=jpg&name=large"
           ]
@@ -3050,6 +3055,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaNGkYsbUAEofEf?format=jpg&name=large"
           ]
@@ -3073,6 +3079,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaNHWwfbUAMbUO2?format=jpg&name=large"
           ]
@@ -3096,6 +3103,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaNHJmFbUAEWKNr?format=jpg&name=large"
           ]
@@ -3119,6 +3127,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaNG3tIbsAALJoF?format=jpg&name=large"
           ]
@@ -3142,6 +3151,7 @@ var source = (() => {
           chapterId: "1",
           languageCode: "JP",
           chapterNumber: 1,
+          volumeNumber: 1,
           pages: [
             "https://pbs.twimg.com/media/GaIG4xSaAAAa681?format=jpg&name=large"
           ]
@@ -3200,10 +3210,10 @@ var source = (() => {
         id: "search-filter-template",
         type: "dropdown",
         options: [
-          { id: "A", value: "A" },
-          { id: "B", value: "B" }
+          { id: "include", value: "include" },
+          { id: "exclude", value: "exclude" }
         ],
-        value: "A",
+        value: "Exclude",
         title: "Search Filter Template"
       });
     }
@@ -3211,46 +3221,19 @@ var source = (() => {
     async getSettingsForm() {
       return new SettingsForm();
     }
-    // Populates search
-    async getSearchResults(query, metadata) {
-      const results = { items: [] };
-      for (let i = 0; i < content_default.length; i++) {
-        if (query.title.indexOf(content_default[i].primaryTitle)) {
-          const result = {
-            mangaId: content_default[i].titleId,
-            title: content_default[i].primaryTitle,
-            subtitle: content_default[i].secondaryTitles[0] ? content_default[i].secondaryTitles[0] : "",
-            imageUrl: content_default[i].thumbnailUrl
-          };
-          results.items.push(result);
-        } else {
-          for (let j = 0; j < content_default[i].secondaryTitles.length; j++) {
-            if (query.title.indexOf(content_default[i].secondaryTitles[j])) {
-              const result = {
-                mangaId: content_default[i].titleId,
-                title: content_default[i].primaryTitle,
-                subtitle: content_default[i].secondaryTitles[0] ? content_default[i].secondaryTitles[0] : "",
-                imageUrl: content_default[i].thumbnailUrl
-              };
-              results.items.push(result);
-              break;
-            }
-          }
-        }
-      }
-      return results;
-    }
     // Populates the first discover section
     async getDiscoverSectionTemplate1(section, metadata) {
       const results = { items: [] };
       for (let i = 0; i < content_default.length / 2; i++) {
-        const result = {
-          mangaId: content_default[i].titleId,
-          title: content_default[i].primaryTitle,
-          subtitle: content_default[i].secondaryTitles[0] ? content_default[i].secondaryTitles[0] : "",
-          imageUrl: content_default[i].thumbnailUrl
-        };
-        results.items.push(result);
+        if (content_default[i].titleId) {
+          const result = {
+            mangaId: content_default[i].titleId,
+            title: content_default[i].primaryTitle ? content_default[i].primaryTitle : "Unknown Title",
+            subtitle: content_default[i].secondaryTitles[0],
+            imageUrl: content_default[i].thumbnailUrl ? content_default[i].thumbnailUrl : ""
+          };
+          results.items.push(result);
+        }
       }
       return results;
     }
@@ -3258,13 +3241,48 @@ var source = (() => {
     async getDiscoverSectionTemplate2(section, metadata) {
       const results = { items: [] };
       for (let i = content_default.length / 2; i < content_default.length; i++) {
-        const result = {
-          mangaId: content_default[i].titleId,
-          title: content_default[i].primaryTitle,
-          subtitle: content_default[i].secondaryTitles[0] ? content_default[i].secondaryTitles[0] : "",
-          imageUrl: content_default[i].thumbnailUrl
-        };
-        results.items.push(result);
+        if (content_default[i].titleId) {
+          const result = {
+            mangaId: content_default[i].titleId,
+            title: content_default[i].primaryTitle ? content_default[i].primaryTitle : "Unknown Title",
+            subtitle: content_default[i].secondaryTitles[0],
+            imageUrl: content_default[i].thumbnailUrl ? content_default[i].thumbnailUrl : ""
+          };
+          results.items.push(result);
+        }
+      }
+      return results;
+    }
+    // Populates search
+    async getSearchResults(query, metadata) {
+      const results = { items: [] };
+      for (let i = 0; i < content_default.length; i++) {
+        if (content_default[i].primaryTitle.toLowerCase().indexOf(query.title.toLowerCase()) != -1 && query.filters[0].value == "include" || content_default[i].primaryTitle.toLowerCase().indexOf(query.title.toLowerCase()) == -1 && query.filters[0].value == "exclude") {
+          if (content_default[i].titleId) {
+            const result = {
+              mangaId: content_default[i].titleId,
+              title: content_default[i].primaryTitle ? content_default[i].primaryTitle : "Unknown Title",
+              subtitle: content_default[i].secondaryTitles[0],
+              imageUrl: content_default[i].thumbnailUrl ? content_default[i].thumbnailUrl : ""
+            };
+            results.items.push(result);
+          }
+        } else {
+          for (let j = 0; j < content_default[i].secondaryTitles.length; j++) {
+            if (content_default[i].secondaryTitles[j].toLowerCase().indexOf(query.title.toLowerCase()) != -1 && query.filters[0].value == "include" || content_default[i].secondaryTitles[j].toLowerCase().indexOf(query.title.toLowerCase()) == -1 && query.filters[0].value == "exclude") {
+              if (content_default[i].titleId) {
+                const result = {
+                  mangaId: content_default[i].titleId,
+                  title: content_default[i].primaryTitle ? content_default[i].primaryTitle : "Unknown Title",
+                  subtitle: content_default[i].secondaryTitles[0],
+                  imageUrl: content_default[i].thumbnailUrl ? content_default[i].thumbnailUrl : ""
+                };
+                results.items.push(result);
+              }
+              break;
+            }
+          }
+        }
       }
       return results;
     }
@@ -3304,18 +3322,18 @@ var source = (() => {
             tags.tags.push(tag);
           }
           return {
-            mangaId: content_default[i].titleId,
+            mangaId,
             mangaInfo: {
-              thumbnailUrl: content_default[i].thumbnailUrl,
-              synopsis: content_default[i].synopsis,
-              primaryTitle: content_default[i].primaryTitle,
-              secondaryTitles: content_default[i].secondaryTitles,
+              thumbnailUrl: content_default[i].thumbnailUrl ? content_default[i].thumbnailUrl : "",
+              synopsis: content_default[i].synopsis ? content_default[i].synopsis : "No synopsis.",
+              primaryTitle: content_default[i].primaryTitle ? content_default[i].primaryTitle : "Unknown Title",
+              secondaryTitles: content_default[i].secondaryTitles ? content_default[i].secondaryTitles : [],
               contentRating,
               status: content_default[i].status,
               author: content_default[i].author,
               rating: content_default[i].rating,
               tagGroups: [genres, tags],
-              artworkUrls: []
+              artworkUrls: [content_default[i].thumbnailUrl]
             }
           };
         }
@@ -3328,22 +3346,24 @@ var source = (() => {
         if (sourceManga.mangaId == content_default[i].titleId) {
           const chapters = [];
           for (let j = 0; j < content_default[i].chapters.length; j++) {
-            const chapter = {
-              chapterId: content_default[i].chapters[j].chapterId,
-              sourceManga,
-              langCode: content_default[i].chapters[j].languageCode,
-              chapNum: content_default[i].chapters[j].chapterNumber,
-              title: content_default[i].primaryTitle,
-              volume: 1
-            };
-            chapters.push(chapter);
+            if (content_default[i].chapters[j].chapterId) {
+              const chapter = {
+                chapterId: content_default[i].chapters[j].chapterId,
+                sourceManga,
+                langCode: content_default[i].chapters[j].languageCode ? content_default[i].chapters[j].languageCode : "EN",
+                chapNum: content_default[i].chapters[j].chapterNumber ? content_default[i].chapters[j].chapterNumber : j + 1,
+                title: content_default[i].primaryTitle,
+                volume: content_default[i].chapters[j].volumeNumber
+              };
+              chapters.push(chapter);
+            }
           }
           return chapters;
         }
       }
       throw new Error("No title with this id exists");
     }
-    // Populates a chapter
+    // Populates a chapter with images
     async getChapterDetails(chapter) {
       for (let i = 0; i < content_default.length; i++) {
         if (chapter.sourceManga.mangaId == content_default[i].titleId) {
