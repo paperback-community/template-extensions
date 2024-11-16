@@ -3174,30 +3174,28 @@ var source = (() => {
     // Populates both the discover sections
     async getDiscoverSectionItems(section, metadata) {
       let i;
-      let j;
       let type;
       switch (section.id) {
         case "discover-section-template1":
           i = 0;
-          j = content_default.length / 2;
           type = "prominentCarouselItem";
           break;
         case "discover-section-template2":
           i = content_default.length / 2;
-          j = content_default.length / 2;
           type = "simpleCarouselItem";
           break;
       }
       return {
-        items: Array.from(Array(j)).map(() => {
-          i++;
-          return {
+        items: Array.from(Array(content_default.length / 2)).map(() => {
+          const result = {
             mangaId: content_default[i].titleId,
             title: content_default[i].primaryTitle ? content_default[i].primaryTitle : "Unknown Title",
             subtitle: content_default[i].secondaryTitles[0],
             imageUrl: content_default[i].thumbnailUrl ? content_default[i].thumbnailUrl : "",
             type
           };
+          ++i;
+          return result;
         })
       };
     }
