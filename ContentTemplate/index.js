@@ -3187,11 +3187,6 @@ var source = (() => {
           j = content_default.length / 2;
           type = "simpleCarouselItem";
           break;
-        default:
-          i = 0;
-          j = content_default.length;
-          type = "simpleCarouselItem";
-          break;
       }
       return {
         items: Array.from(Array(j)).map(() => {
